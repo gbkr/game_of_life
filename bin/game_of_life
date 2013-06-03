@@ -25,6 +25,10 @@ option_parser = OptionParser.new do |opts|
   opts.on("-r RESOLUTION", "--resolution RESOLUTION") do |resolution|
     options[:resolution] = resolution.to_i
   end
+
+  opts.on("-d", "--no-wrap") do |wrap|
+    options[:wrap] = false
+  end
 end
 
 option_parser.parse!

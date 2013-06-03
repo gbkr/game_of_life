@@ -76,8 +76,12 @@ module GameOfLife
       update_cell(y-1, x-1, value)
     end
 
+    def update_cell(*opts)
+      wrap ? update_with_wrap(*opts) : update_without_wrap(*opts)
+    end
 
-    def update_cell(y,x, value)
+
+    def update_with_wrap(y,x, value)
       y = 0 if y >=rows
       x = 0 if x >=columns
       y = rows - 1 if y < 0
@@ -86,12 +90,12 @@ module GameOfLife
       review_for_changelist(x, y)
     end
 
-    #  def update_cell_no_wrap(y,x, value)
-    #return if y < 0 or y >= rows
-    #return if x < 0 or x >= columns
-    #@next_grid[y][x][1] += value 
-    #review_for_changelist(x, y)
-    #end
+    def update_without_wrap(y,x, value)
+      return if y < 0 or y >= rows
+      return if x < 0 or x >= columns
+      @next_grid[y][x][1] += value 
+      review_for_changelist(x, y)
+    end
 
     def rows
       height / resolution
