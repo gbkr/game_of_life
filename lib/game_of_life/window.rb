@@ -22,7 +22,17 @@ module GameOfLife
     end
 
     private
-  
+
+    def needs_cursor?
+      true
+    end
+
+    def button_down(id)
+      if id == Gosu::KbEscape
+        close
+      end
+    end
+
     def draw_cell(x, y)
       x = x * @resolution
       y = y * @resolution

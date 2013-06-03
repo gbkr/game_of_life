@@ -10,7 +10,9 @@ Gem::Specification.new do |s|
     bin/game_of_life
     lib/game_of_life.rb
     lib/game_of_life/window.rb
+    lib/game_of_life/grid_base.rb
     lib/game_of_life/grid.rb
+    lib/game_of_life/grid_builder.rb
   }
   s.require_paths = ['lib', 'lib/game_of_life']
   s.has_rdoc = false

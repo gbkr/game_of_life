@@ -9,7 +9,7 @@ require 'json'
 options = {}
 
 option_parser = OptionParser.new do |opts|
-  # create a switch
+
   opts.on("-p PATTERN", "--pattern PATTERN") do |pattern|
     options[:pattern] = pattern
   end
