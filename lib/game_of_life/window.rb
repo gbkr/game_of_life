@@ -14,12 +14,21 @@ module GameOfLife
     end
 
     def draw
-      @cellmap.grid.each_index do |y|
-        @cellmap.grid[y].each_index do |x|
-          draw_cell(x, y) if @cellmap.grid[y][x][0] == 1
+      @cellmap.on_cells.each do |x, y_values|
+        y_values.keys.each do |y|
+          draw_cell(x, y)
         end
       end
     end
+    
+    
+   # def draw2
+      #@cellmap.grid.each_index do |y|
+        #@cellmap.grid[y].each_index do |x|
+          #draw_cell(x, y) if @cellmap.grid[y][x][0] == 1
+        #end
+      #end
+    #end
 
     private
 

@@ -1,16 +1,40 @@
 module GameOfLife
   class CellMap < GridBase
 
-    attr_reader :change_list
+    attr_reader :change_list, :on_cells
 
     def initialize(options={})
       @grid = grid_builder(options)
       @next_grid = dup_grid
-      @change_list = create_change_list
       @next_change_list = []
       @unique_cells = {}
+      @on_cells = {}
+      @change_list = create_change_list
+
       super options
+
+      grid.each.with_index do |row, y|
+        row.each.with_index do |cell, x|
+          review_for_on_cells(x,y)
+        end
+      end
     end
+
+    def review_for_on_cells(x,y)
+      if @next_grid[y][x][0]==1
+        if @on_cells[x]
+          return if @on_cells[x][y]
+          @on_cells[x].merge!({ y => true })
+        else
+          @on_cells.merge!( x => { y => true })
+        end
+      else
+        if @on_cells[x]
+          @on_cells[x].delete(y) if @on_cells[x][y]
+        end
+      end
+    end
+
 
     def next_generation
       @unique_cells.clear
@@ -56,9 +80,11 @@ module GameOfLife
           update_neighbours(x, y, 1)
         end
       end
+
       if state
         @next_grid[y][x][0] = state
         review_for_changelist(x, y)
+        review_for_on_cells(x,y)
       end
     end
 
