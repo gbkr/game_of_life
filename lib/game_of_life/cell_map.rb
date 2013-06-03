@@ -8,18 +8,14 @@ module GameOfLife
       @next_grid = dup_grid
       @change_list = create_change_list
       @next_change_list = []
-      @h = {}
+      @unique_cells = {}
       super options
     end
 
-    def grid_builder(options)
-      GridBuilder.new(options).build_grid
-    end
-
     def next_generation
-      @h.clear
+      @unique_cells.clear
       @next_change_list.clear
-      @change_list.each do |cell|
+      change_list.each do |cell|
         process_node(cell[0], cell[1])
       end
       @grid = dup_next_grid
@@ -28,15 +24,16 @@ module GameOfLife
 
     private
 
+    def grid_builder(options)
+      GridBuilder.new(options).build_grid
+    end
+
     def review_for_changelist(x,y)
-      if @h.fetch(x, nil)
-        if @h[x].fetch(y, nil)
-          return
-        else
-          @h[x].merge!({y => true})
-        end
+      if @unique_cells[x]
+        return if @unique_cells[x][y]
+        @unique_cells[x].merge!({ y => true })
       else
-        @h.merge!(x => { y => true})
+        @unique_cells.merge!( x => { y => true })
       end
       @next_change_list << [x,y]
     end
@@ -80,7 +77,6 @@ module GameOfLife
       wrap ? update_with_wrap(*opts) : update_without_wrap(*opts)
     end
 
-
     def update_with_wrap(y,x, value)
       y = 0 if y >=rows
       x = 0 if x >=columns
@@ -95,14 +91,6 @@ module GameOfLife
       return if x < 0 or x >= columns
       @next_grid[y][x][1] += value 
       review_for_changelist(x, y)
-    end
-
-    def rows
-      height / resolution
-    end
-
-    def columns
-      width / resolution
     end
 
     Cell = Struct.new(:alive?, :neighbours, :x, :y)

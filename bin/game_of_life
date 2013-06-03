@@ -33,5 +33,9 @@ end
 
 option_parser.parse!
 
-cell_map = GameOfLife::CellMap.new(options)
-GameOfLife::Window.new(cell_map).show
+#begin
+  cell_map = GameOfLife::CellMap.new(options)
+  GameOfLife::Window.new(cell_map).show
+#rescue => e
+#  puts e.message
+#end
