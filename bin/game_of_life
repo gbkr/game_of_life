@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'gosu'
+require 'matrix'
+require 'optparse'
+require 'game_of_life'
+require 'json'
+
+options = {}
+
+option_parser = OptionParser.new do |opts|
+  # create a switch
+  opts.on("-p PATTERN", "--pattern PATTERN") do |pattern|
+    options[:pattern] = pattern
+  end
+
+  opts.on("-x WIDTH") do |x|
+    options[:width] = x.to_i
+  end
+
+  opts.on("-y HEIGHT") do |y|
+    options[:height] = y.to_i
+  end
+
+  opts.on("-r RESOLUTION", "--resolution RESOLUTION") do |resolution|
+    options[:resolution] = resolution.to_i
+  end
+end
+
+option_parser.parse!
+
+cell_map = GameOfLife::CellMap.new(options)
+GameOfLife::Window.new(cell_map).show
