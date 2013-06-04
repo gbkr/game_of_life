@@ -47,13 +47,17 @@ module GameOfLife
       when Gosu::KbEscape
         close
       when Gosu::MsLeft
-        unless @iterate
-          x = (mouse_x/@resolution).to_i
-          y = (mouse_y/@resolution).to_i
-          @cellmap.add_cell(x,y)
-        end
-      when Gosu::MsRight
+        add_cell
+      when Gosu::MsRight, Gosu::KbReturn
         @iterate = true
+      end
+    end
+
+    def add_cell
+      unless @iterate
+        x = (mouse_x/@resolution).to_i
+        y = (mouse_y/@resolution).to_i
+        @cellmap.add_cell(x,y)
       end
     end
 

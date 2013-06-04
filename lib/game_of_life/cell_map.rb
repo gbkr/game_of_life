@@ -16,13 +16,9 @@ module GameOfLife
     end
 
     def next_generation
-      @unique_cells.clear
-      @next_change_list.clear
-      change_list.each do |cell|
-        process_node(cell[0], cell[1])
-      end
-      @grid = dup_next_grid
-      @change_list = dup_next_change_list
+      clear_prev_gen_vars
+      process_change_list
+      update_new_generation
       @iteration += 1
     end 
 
@@ -31,28 +27,29 @@ module GameOfLife
     end
 
     def add_cell(x,y)
-      if @on_cells[x]
-        if @on_cells[x][y]
-          @on_cells[x].delete(y)
-        else
-          @on_cells[x].merge!({ y => true}) 
-        end  
-      else
-        @on_cells.merge!(x => { y => true} )
-      end
-
-      if @next_grid[y][x][0] == 1
-        @next_grid[y][x][0] = 0
-        update_neighbours(x, y, -1)
-      else
-        @next_grid[y][x][0] = 1
-        update_neighbours(x, y, 1)
-      end
+      toggle_on_cells(x,y)
+      toggle_neighbours(x,y)
       @grid = dup_next_grid
       @change_list = create_change_list
     end
 
     private
+
+    def clear_prev_gen_vars
+      @unique_cells.clear
+      @next_change_list.clear
+    end
+
+    def process_change_list
+      change_list.each do |cell|
+        process_node(cell[0], cell[1])
+      end
+    end
+
+    def update_new_generation
+      @grid = dup_next_grid
+      @change_list = dup_next_change_list
+    end
 
     def find_on_cells
       grid.each.with_index do |row, y|
@@ -77,6 +74,28 @@ module GameOfLife
       end
     end
 
+    def toggle_on_cells(x, y)
+      if @on_cells[x]
+        if @on_cells[x][y]
+          @on_cells[x].delete(y)
+        else
+          @on_cells[x].merge!({ y => true}) 
+        end  
+      else
+        @on_cells.merge!(x => { y => true} )
+      end
+    end
+
+    def toggle_neighbours(x,y)
+      if @next_grid[y][x][0] == 1
+        @next_grid[y][x][0] = 0
+        update_neighbours(x, y, -1)
+      else
+        @next_grid[y][x][0] = 1
+        update_neighbours(x, y, 1)
+      end
+    end
+
     def grid_builder(options)
       GridBuilder.new(options).build_grid
     end
@@ -91,11 +110,6 @@ module GameOfLife
       @next_change_list << [x,y]
     end
 
-
-    # update the state of (x,y)
-    # if the state changes, update the neighbours
-    # eg. a cell state changes (based on it's state and neighbour count), then either all neighbouring
-    # cells have their neighbour count incremented, or decremented
     def process_node(x, y)
       cell = cell_detail(x, y)
       if cell.alive?
