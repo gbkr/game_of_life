@@ -10,9 +10,51 @@ module GameOfLife
       @unique_cells = {}
       @on_cells = {}
       @change_list = create_change_list
-
+      @iteration = 0
       super options
+      find_on_cells
+    end
 
+    def next_generation
+      @unique_cells.clear
+      @next_change_list.clear
+      change_list.each do |cell|
+        process_node(cell[0], cell[1])
+      end
+      @grid = dup_next_grid
+      @change_list = dup_next_change_list
+      @iteration += 1
+    end 
+
+    def iteration
+      @iteration.to_s
+    end
+
+    def add_cell(x,y)
+      if @on_cells[x]
+        if @on_cells[x][y]
+          @on_cells[x].delete(y)
+        else
+          @on_cells[x].merge!({ y => true}) 
+        end  
+      else
+        @on_cells.merge!(x => { y => true} )
+      end
+
+      if @next_grid[y][x][0] == 1
+        @next_grid[y][x][0] = 0
+        update_neighbours(x, y, -1)
+      else
+        @next_grid[y][x][0] = 1
+        update_neighbours(x, y, 1)
+      end
+      @grid = dup_next_grid
+      @change_list = create_change_list
+    end
+
+    private
+
+    def find_on_cells
       grid.each.with_index do |row, y|
         row.each.with_index do |cell, x|
           review_for_on_cells(x,y)
@@ -34,19 +76,6 @@ module GameOfLife
         end
       end
     end
-
-
-    def next_generation
-      @unique_cells.clear
-      @next_change_list.clear
-      change_list.each do |cell|
-        process_node(cell[0], cell[1])
-      end
-      @grid = dup_next_grid
-      @change_list = dup_next_change_list
-    end 
-
-    private
 
     def grid_builder(options)
       GridBuilder.new(options).build_grid

@@ -11,6 +11,7 @@ module GameOfLife
     def build_grid
       @grid = build_matrix(rows, columns)
       add_pattern(load_pattern) if pattern
+      @grid
     end
 
     private
