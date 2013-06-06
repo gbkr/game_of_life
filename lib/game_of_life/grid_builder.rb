@@ -33,7 +33,7 @@ module GameOfLife
     end
 
     def load_pattern
-      pattern = cellmap_with_pattern(pattern_data)
+      pattern = build_cellmap_with_pattern(pattern_data)
       add_pattern(pattern)
       update_neighbour_count
     end
@@ -46,24 +46,25 @@ module GameOfLife
       [x_start, y_start]
     end
 
-
-    # generate a grid from the calculated attributes of the pattern
-    # load the pattern into this grid
-    def cellmap_with_pattern(pattern_data)
+    def build_cellmap_with_pattern(pattern_data)
       check_pattern_size(pattern_data)
       pattern_map = build_matrix(pattern_data[:height],
                                  pattern_data[:width])
 
-      pattern_data[:pattern].each {|x, values| 
-        values.each do |y, cells|
-          cells.split(//).each.with_index do |state, state_i|
-            x_pos = x + state_i + pattern_data[:x_offset]
-            y_pos = y + pattern_data[:y_offset]
+      pattern_data[:pattern].each { |x, values| 
+        values.each { |y, cells|
+          cells.split(//).each.with_index { |state, state_i|
+            x_pos = x + state_i + pattern_data[:x_offset] + padding_for_neighbour_count
+            y_pos = y + pattern_data[:y_offset] + padding_for_neighbour_count
             pattern_map[y_pos][x_pos][0] = 1 if state == '*'
-          end
-        end
+          }
+        }
       }
       pattern_map
+    end
+
+    def padding_for_neighbour_count
+      1
     end
 
     def read_pattern_file
@@ -98,7 +99,7 @@ module GameOfLife
         end }
 
       attributes[:width] = (x.max - x.min) + 2
-      attributes[:height] = (y.max - y.min) + 2
+      attributes[:height] = (y.max - y.min) + 3
       attributes[:x_offset] = x.min * -1
       attributes[:y_offset] = y.min * -1
       attributes[:pattern] = pattern
@@ -120,7 +121,8 @@ module GameOfLife
     end
 
     def live_neighbours(x, y)
-      %i[top top_right right bottom_right bottom bottom_left left top_left].map { |position| self.send(position, x, y) }.reduce(:+)
+      %i[top top_right right bottom_right bottom bottom_left left top_left].
+        map { |position| self.send(position, x, y) }.reduce(:+)
     end
 
     def top(x,y); check(x, y-1); end
@@ -139,9 +141,9 @@ module GameOfLife
     end
 
     def check_pattern_size(pattern)
-      unless grid.size >= pattern[:height] and
-        grid[0].size >= pattern[:width].size
-        raise "Pattern too large for default grid. Please choose a cellmap larger " +
+      if grid.size < pattern[:height] or
+        grid[0].size < pattern[:width]
+        raise "Pattern too large for default grid. Please dimensions larger " +
           "than #{pattern[:width]} columns and #{pattern[:height]} rows."
       end
     end
