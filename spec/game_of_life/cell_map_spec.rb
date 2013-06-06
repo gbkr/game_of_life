@@ -33,9 +33,9 @@ module GameOfLife
         CellMap.new(options).grid.should == 
           [[[0, 0], [0, 0]], [[0, 0], [0, 0]], [[0, 0], [0, 0]]]
       end
-     
+
       it 'should contain the pattern when built with a pattern' do
-        options = { resolution: 10, width: 30, height: 30, pattern: 'p.arr' }
+        options = { resolution: 10, width: 120, height: 120, pattern: RPENTO }
         CellMap.new(options).grid.should == 
           [[[0, 3], [1, 3], [0, 3]], [[1, 2], [1, 4], [1, 3]], [[0, 2], [0, 4], [1, 2]]]
       end
@@ -43,12 +43,12 @@ module GameOfLife
 
     describe 'next_generation' do
       it 'should iterate correctly once' do
-        options = { resolution: 10, width: 30, height: 30, pattern: 'p.arr' }
+        options = { resolution: 10, width: 30, height: 30, pattern: 'RPENTO.LIF' }
         cellmap = CellMap.new(options)
 
         cellmap.next_generation
         cellmap.grid.should == 
-           [[[1, 2], [1, 4], [1, 2]],[[1, 2], [0, 6], [1, 3]],[[0, 1], [0, 3], [1, 1]]]
+          [[[1, 2], [1, 4], [1, 2]],[[1, 2], [0, 6], [1, 3]],[[0, 1], [0, 3], [1, 1]]]
       end
 
       it 'should iterate correctly twice' do
@@ -56,7 +56,7 @@ module GameOfLife
         cellmap = CellMap.new(options) 
         2.times { cellmap.next_generation }
         cellmap.grid.should == 
-           [[[1,1], [0,4], [1,1]], [[1,2], [0,5], [1,2]], [[0,2], [1,2], [0,2]]]
+          [[[1,1], [0,4], [1,1]], [[1,2], [0,5], [1,2]], [[0,2], [1,2], [0,2]]]
       end
 
       it 'should iterate correcty thrice' do
@@ -66,14 +66,14 @@ module GameOfLife
         cellmap.grid.should == 
           [[[0,1], [0,2], [0,1]], [[1,1], [0,3], [1,1]], [[0,2], [1,2], [0,2]]]
       end
-    
+
       it 'should increment neighbours correctly' do
         options = { resolution: 10, width: 30, height: 30, pattern: 'p.arr' }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.update_neighbours(1, 1, 1)
         cellmap.grid.should ==
-           [[[0, 4], [1, 4], [0, 4]], [[1, 3], [1, 4], [1, 4]], [[0, 3], [0, 5], [1, 3]]]
+          [[[0, 4], [1, 4], [0, 4]], [[1, 3], [1, 4], [1, 4]], [[0, 3], [0, 5], [1, 3]]]
       end
 
       it 'should decrement neighbours correctly' do
@@ -84,14 +84,19 @@ module GameOfLife
         cellmap.grid.should ==
           [[[0, 2], [1, 2], [0, 2]], [[1, 1], [1, 4], [1, 2]], [[0, 1], [0, 3], [1, 1]]]
       end
+    end
 
+
+
+
+    describe 'wrapping' do
       it 'should increment top left corner neighours correctly' do
         options = { resolution: 10, width: 30, height: 30, pattern: 'p.arr' }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.update_neighbours(0, 0, 1)
         cellmap.grid.should ==
-         [[[0, 3], [1, 4], [0, 3]], [[1, 3], [1, 5], [1, 3]], [[0, 2], [0, 4], [1, 2]]]
+          [[[0, 3], [1, 4], [0, 3]], [[1, 3], [1, 5], [1, 3]], [[0, 2], [0, 4], [1, 2]]]
       end
 
       it 'should increment bottom left corner neighours correctly' do
@@ -111,9 +116,8 @@ module GameOfLife
         cellmap.grid.should ==
           [[[0, 3], [1, 4], [0, 3]], [[1, 2], [1, 5], [1, 4]], [[0, 2], [0, 4], [1, 2]]]
       end
-    end
 
-    it 'should increment bottom right corner neighbours correctly' do
+      it 'should increment bottom right corner neighbours correctly' do
         options = { resolution: 10, width: 30, height: 30, pattern: 'p.arr' }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
@@ -121,23 +125,16 @@ module GameOfLife
         cellmap.grid.should == 
           [[[0, 3], [1, 3], [0, 3]], [[1, 2], [1, 5], [1, 4]], [[0, 2], [0, 5], [1, 2]]]
 
-    end
-
-
-    #iit 'must be the correct color' do
-    #  grid.color.to_s =~ /Gosu::Color/
-    #end
-
-    #todo: iterate
-
-  end
-
-  describe 'change list' do
-    it 'should initialize correctly' do
-      options = { pattern: 'complex.arr' }
-      cellmap = CellMap.new(options)
-      cellmap.change_list.size.should == 21
+      end
     end
   end
+
+  #describe 'change list' do
+  #  it 'should initialize correctly' do
+  #    options = { pattern: 'complex.arr' }
+  #    cellmap = CellMap.new(options)
+  #    cellmap.change_list.size.should == 21
+  #  end
+  #end
 end
 

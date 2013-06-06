@@ -10,7 +10,7 @@ module GameOfLife
 
     def build_grid
       @grid = build_matrix(rows, columns)
-      add_pattern(load_pattern) if pattern
+      load_pattern if pattern
       @grid
     end
 
@@ -33,7 +33,7 @@ module GameOfLife
     end
 
     def load_pattern
-      pattern = cellmap_with_pattern(pattern_attributes)
+      pattern = cellmap_with_pattern(pattern_data)
       add_pattern(pattern)
       update_neighbour_count
     end
@@ -46,29 +46,24 @@ module GameOfLife
       [x_start, y_start]
     end
 
-    def cellmap_with_pattern(pattern_attributes)
-      check_pattern_size(pattern_attributes)
-      pattern_map = build_matrix(pattern_attributes[:height],
-                                 pattern_attributes[:width])
 
-      read_pattern_file { |file|
-        while (line = file.gets)
-          line.strip!
-          if line =~ /#P/
-            node_x, node_y = line.split.values_at(1, 2).map { |e| e.to_i }
-          elsif line =~ /\A[\*\.]*\z/
-            line.split(//).each.with_index do |state, state_i|
-            if state == '*'
-              y = node_y + pattern_attributes[:y_offset]
-              x = node_x + pattern_attributes[:x_offset] + state_i 
-              pattern_map[y][x][0] = 1
-            end
-          end
-          node_y += 1
+    # generate a grid from the calculated attributes of the pattern
+    # load the pattern into this grid
+    def cellmap_with_pattern(pattern_data)
+      check_pattern_size(pattern_data)
+      pattern_map = build_matrix(pattern_data[:height],
+                                 pattern_data[:width])
+
+      pattern_data[:pattern].each {|x, values| 
+        values.each do |y, cells|
+          cells.split(//).each.with_index do |state, state_i|
+            x_pos = x + state_i + pattern_data[:x_offset]
+            y_pos = y + pattern_data[:y_offset]
+            pattern_map[y_pos][x_pos][0] = 1 if state == '*'
           end
         end
-        pattern_map 
       }
+      pattern_map
     end
 
     def read_pattern_file
@@ -81,30 +76,39 @@ module GameOfLife
       end
     end
 
-    def pattern_attributes
-      x = []
-      y = []
+
+    def pattern_data
+      x,y = [], []
+      pattern, attributes = {}, {}
 
       read_pattern_file { |file|
         while (line = file.gets)
           line.strip!
           if line =~ /#P/
             y_count = 0
-            coordinates = line.sub('#P ', '').split(' ')
+            block = block_location(line)
+            x << block.x
           elsif line =~ /\A[\*\.]*\z/
+            y << y_count + block.y
+            x << line.length + block.x
+            pattern[block.x] ||= {}
+            pattern[block.x][block.y + y_count] = line
             y_count += 1
-            y << y_count + coordinates[1].to_i
-            x << line.length + coordinates[0].to_i
           end
-        end
-      }
+        end }
 
-      attributes = {}
-      attributes[:width] = x.map {|e| e.abs}.max * 2
-      attributes[:height] = y.map {|e| e.abs}.max * 2
-      attributes[:x_offset] = x.min.abs + 1
-      attributes[:y_offset] = y.min.abs + 1
+      attributes[:width] = (x.max - x.min) + 2
+      attributes[:height] = (y.max - y.min) + 2
+      attributes[:x_offset] = x.min * -1
+      attributes[:y_offset] = y.min * -1
+      attributes[:pattern] = pattern
       attributes
+    end
+
+    Block = Struct.new(:x, :y)
+    def block_location(line)
+      coordinates = line.sub('#P ', '').split(' ').map { |e| e.to_i }
+      Block.new(coordinates[0], coordinates[1])
     end
 
     def update_neighbour_count
