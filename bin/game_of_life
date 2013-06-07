@@ -29,6 +29,14 @@ option_parser = OptionParser.new do |opts|
   opts.on("-d", "--no-wrap") do |wrap|
     options[:wrap] = false
   end
+
+  opts.on("-l RULES", "--rules RULES") do |rules|
+    options[:rules] = rules
+  end
+
+  opts.on("-f FRAME_RATE", "--frame-rate FRAME_RATE") do |frame_rate|
+    options[:frame_rate] = frame_rate
+  end
 end
 
 option_parser.parse!

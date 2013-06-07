@@ -16,11 +16,13 @@ module GameOfLife
     end
 
     def next_generation
-      clear_prev_gen_vars
-      process_change_list
-      update_new_generation
-      @iteration += 1
-    end 
+      ensure_frame_rate {
+        clear_prev_gen_vars
+        process_change_list
+        update_new_generation
+        @iteration += 1
+      }
+    end
 
     def iteration
       @iteration.to_s
@@ -34,6 +36,16 @@ module GameOfLife
     end
 
     private
+
+    def ensure_frame_rate
+      yield and return unless freq
+      t1 = Time.now
+      yield
+      duration = Time.now - t1
+      unless duration > freq
+        sleep freq - duration
+      end
+    end
 
     def clear_prev_gen_vars
       @unique_cells.clear
@@ -80,7 +92,7 @@ module GameOfLife
           @on_cells[x].delete(y)
         else
           @on_cells[x].merge!({ y => true}) 
-        end  
+        end
       else
         @on_cells.merge!(x => { y => true} )
       end
@@ -113,12 +125,12 @@ module GameOfLife
     def process_node(x, y)
       cell = cell_detail(x, y)
       if cell.alive?
-        unless cell.neighbours.between?(2, 3)
+        unless @rules.survival.include?(cell.neighbours)
           state = 0
           update_neighbours(x, y, -1)
         end
       else
-        if cell.neighbours == 3
+        if @rules.birth.include?(cell.neighbours)
           state = 1
           update_neighbours(x, y, 1)
         end

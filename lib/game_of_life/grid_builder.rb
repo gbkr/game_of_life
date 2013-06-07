@@ -51,7 +51,7 @@ module GameOfLife
       pattern_map = build_matrix(pattern_data[:height],
                                  pattern_data[:width])
 
-      pattern_data[:pattern].each { |x, values| 
+      pattern_data[:pattern].each { |x, values|
         values.each { |y, cells|
           cells.split(//).each.with_index { |state, state_i|
             x_pos = x + state_i + pattern_data[:x_offset] + padding_for_neighbour_count
@@ -79,7 +79,7 @@ module GameOfLife
 
 
     def pattern_data
-      x,y = [], []
+      x, y, rules= [], [], []
       pattern, attributes = {}, {}
 
       read_pattern_file { |file|
@@ -89,6 +89,8 @@ module GameOfLife
             y_count = 0
             block = block_location(line)
             x << block.x
+          elsif line =~ /#R/
+            rules = life_rules(line)
           elsif line =~ /\A[\*\.]*\z/
             y << y_count + block.y
             x << line.length + block.x
@@ -103,6 +105,7 @@ module GameOfLife
       attributes[:x_offset] = x.min * -1
       attributes[:y_offset] = y.min * -1
       attributes[:pattern] = pattern
+      attributes[:rules] = rules
       attributes
     end
 

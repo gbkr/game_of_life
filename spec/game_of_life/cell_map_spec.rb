@@ -88,7 +88,8 @@ module GameOfLife
             [[1, 2], [0, 5], [0, 6], [1, 3], [0, 3]], 
             [[0, 3], [1, 4], [1, 4], [0, 3], [0, 2]], 
             [[0, 3], [1, 5], [1, 5], [0, 3], [0, 0]]
-        ]      end
+        ]
+      end
 
       it 'should increment neighbours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
@@ -122,8 +123,6 @@ module GameOfLife
     end
 
 
-
-
     describe 'wrapping' do
       it 'should increment top left corner neighours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
@@ -131,12 +130,12 @@ module GameOfLife
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 0, 0, 1)
         cellmap.grid.should ==
-         [
-          [[0, 0], [0, 2], [0, 2], [0, 2], [0, 2]], 
-          [[0, 2], [0, 4], [1, 3], [1, 2], [0, 2]], 
-          [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
-          [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
-          [[0, 1], [0, 2], [0, 1], [0, 1], [0, 1]]
+          [
+            [[0, 0], [0, 2], [0, 2], [0, 2], [0, 2]], 
+            [[0, 2], [0, 4], [1, 3], [1, 2], [0, 2]], 
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
+            [[0, 1], [0, 2], [0, 1], [0, 1], [0, 1]]
         ]
       end
 
@@ -144,14 +143,14 @@ module GameOfLife
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
-        cellmap.send(:update_neighbours, 0, 2, 1)
+        cellmap.send(:update_neighbours, 0, 4, 1)
         cellmap.grid.should == 
           [
-            [[0, 0], [0, 1], [0, 2], [0, 2], [0, 1]], 
-            [[0, 2], [0, 4], [1, 3], [1, 2], [0, 2]], 
-            [[0, 1], [1, 4], [1, 4], [0, 4], [0, 2]], 
+            [[0, 1], [0, 2], [0, 2], [0, 2], [0, 2]], 
+            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]], 
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
             [[0, 2], [0, 4], [1, 2], [0, 2], [0, 1]], 
-            [[0, 0], [0, 1], [0, 1], [0, 1], [0, 0]]
+            [[0, 0], [0, 2], [0, 1], [0, 1], [0, 1]]
         ]
       end
 
@@ -159,14 +158,14 @@ module GameOfLife
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
-        cellmap.send(:update_neighbours, 2, 0, 1)
+        cellmap.send(:update_neighbours, 4, 0, 1)
         cellmap.grid.should ==
           [
-            [[0, 0], [0, 2], [0, 2], [0, 3], [0, 1]], 
-            [[0, 1], [0, 4], [1, 4], [1, 3], [0, 1]], 
+            [[0, 1], [0, 1], [0, 2], [0, 3], [0, 1]], 
+            [[0, 2], [0, 3], [1, 3], [1, 3], [0, 2]], 
             [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
             [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
-            [[0, 0], [0, 2], [0, 2], [0, 2], [0, 0]]
+            [[0, 1], [0, 1], [0, 1], [0, 2], [0, 1]]
         ]
       end
 
@@ -174,14 +173,14 @@ module GameOfLife
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
-        cellmap.send(:update_neighbours, 2, 2, 1)
+        cellmap.send(:update_neighbours, 4, 4, 1)
         cellmap.grid.should == 
           [
-            [[0, 0], [0, 1], [0, 2], [0, 2], [0, 1]],
-            [[0, 1], [0, 4], [1, 4], [1, 3], [0, 1]],
-            [[0, 1], [1, 4], [1, 4], [0, 5], [0, 1]], 
-            [[0, 1], [0, 4], [1, 3], [0, 3], [0, 0]],
-            [[0, 0], [0, 1], [0, 1], [0, 1], [0, 0]]
+            [[0, 1], [0, 1], [0, 2], [0, 3], [0, 2]], 
+            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]], 
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
+            [[0, 2], [0, 3], [1, 2], [0, 3], [0, 1]], 
+            [[0, 1], [0, 1], [0, 1], [0, 2], [0, 0]]
         ]
       end
     end
