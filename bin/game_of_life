@@ -10,40 +10,41 @@ options = {}
 
 option_parser = OptionParser.new do |opts|
 
-  opts.on("-p PATTERN", "--pattern PATTERN") do |pattern|
+  opts.on("-p PATTERN", "--pattern PATTERN", 'Load a .LIF file') do |pattern|
     options[:pattern] = pattern
   end
 
-  opts.on("-x WIDTH") do |x|
+  opts.on("-x WIDTH", 'The length of the X axis') do |x|
     options[:width] = x.to_i
   end
 
-  opts.on("-y HEIGHT") do |y|
+  opts.on("-y HEIGHT", 'The length of the Y axis') do |y|
     options[:height] = y.to_i
   end
 
-  opts.on("-r RESOLUTION", "--resolution RESOLUTION") do |resolution|
+  opts.on("-r RESOLUTION", "--resolution RESOLUTION", 'The length of the side of an individual cell') do |resolution|
     options[:resolution] = resolution.to_i
   end
 
-  opts.on("-d", "--no-wrap") do |wrap|
+  opts.on("-d", "--no-wrap", 'Disable wrapping') do |wrap|
     options[:wrap] = false
   end
 
-  opts.on("-l RULES", "--rules RULES") do |rules|
+  opts.on("-l RULES", "--rules RULES", 'Specify as survival/birth. The default is 23/3 meaning that to survive a cell' +
+   'needs 2 or 3 neighbours and to be born it needs 3 alive neighbours.') do |rules|
     options[:rules] = rules
   end
 
-  opts.on("-f FRAME_RATE", "--frame-rate FRAME_RATE") do |frame_rate|
+  opts.on("-f FRAME_RATE", "--frame-rate FRAME_RATE", 'Specify a maximum frame rate' ) do |frame_rate|
     options[:frame_rate] = frame_rate
   end
 end
 
 option_parser.parse!
 
-#begin
+begin
   cell_map = GameOfLife::CellMap.new(options)
   GameOfLife::Window.new(cell_map).show
-#rescue => e
-#  puts e.message
-#end
+rescue => e
+  puts e.message
+end

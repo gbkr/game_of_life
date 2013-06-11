@@ -146,8 +146,8 @@ module GameOfLife
     def check_pattern_size(pattern)
       if grid.size < pattern[:height] or
         grid[0].size < pattern[:width]
-        raise "Pattern too large for default grid. Please dimensions larger " +
-          "than #{pattern[:width]} columns and #{pattern[:height]} rows."
+        raise "Pattern too large for default grid. Please specify dimensions of at least " +
+          "#{pattern[:width]} columns and #{pattern[:height]} rows."
       end
     end
   end
