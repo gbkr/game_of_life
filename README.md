@@ -19,8 +19,8 @@ Beyond oscillators and gliders, more and more complex shapes begin to emerge. Fo
 devised. The mathematician, John von Neumann has estimated that a self-replicating pattern could even be created and estimates
 a minimum size for this object at ten trillion cells (approximately the number of molecules in a human cell).
 
-Gliders can be used to represent bit streams (the presence of a glider being a 1 and the absence a 0). Various pattern can be used to 
-process these streams, thereby ensuring the computation of boolean and basic logic functions (AND/OR/NOT).
+Gliders can be used to represent bit streams (the presence of a glider being a 1 and the absence a 0). Various patterns can be used 
+to process these streams, thereby ensuring the computation of boolean and basic logic functions (AND/OR/NOT).
 
 The game can be used to implement both a [Universal Turing machine](http://www.igblan.free-online.co.uk/igblan/ca/) and also a [Von Neumann Universal Constructor](http://conwaylife.com/wiki/Universal_constructor).
 
