@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
     lib/game_of_life.rb
     lib/game_of_life/window.rb
     lib/game_of_life/grid_base.rb
-    lib/game_of_life/grid.rb
     lib/game_of_life/grid_builder.rb
+    lib/game_of_life/cell_map.rb
   }
   s.require_paths = ['lib', 'lib/game_of_life']
   s.has_rdoc = false

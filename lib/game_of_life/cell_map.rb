@@ -75,9 +75,9 @@ module GameOfLife
       if @next_grid[y][x][0]==1
         if @on_cells[x]
           return if @on_cells[x][y]
-          @on_cells[x].merge!({ y => true })
+          @on_cells[x].merge!({ y => neighbour_count(x,y) })
         else
-          @on_cells.merge!( x => { y => true })
+          @on_cells.merge!( x => { y => neighbour_count(x,y) })
         end
       else
         if @on_cells[x]
@@ -91,11 +91,15 @@ module GameOfLife
         if @on_cells[x][y]
           @on_cells[x].delete(y)
         else
-          @on_cells[x].merge!({ y => true}) 
+          @on_cells[x].merge!({ y => neighbour_count(x,y) }) 
         end
       else
-        @on_cells.merge!(x => { y => true} )
+        @on_cells.merge!(x => { y => neighbour_count(x,y) } )
       end
+    end
+
+    def neighbour_count(x, y)
+      @next_grid[y][x][1]
     end
 
     def toggle_neighbours(x,y)
@@ -115,9 +119,9 @@ module GameOfLife
     def review_for_changelist(x,y)
       if @unique_cells[x]
         return if @unique_cells[x][y]
-        @unique_cells[x].merge!({ y => true })
+        @unique_cells[x].merge!({ y => 1 })
       else
-        @unique_cells.merge!( x => { y => true })
+        @unique_cells.merge!( x => { y => 1 })
       end
       @next_change_list << [x,y]
     end

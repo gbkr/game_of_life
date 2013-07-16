@@ -10,6 +10,7 @@ module GameOfLife
       @resolution = @cellmap.resolution
       @font = Gosu::Font.new(self, "Arial", 18)
       @iterate = ( @cellmap.pattern.nil? ? false : true )
+      @color_map = ColorMap.new
     end
 
     def update
@@ -25,8 +26,8 @@ module GameOfLife
 
     def render_cells
       @cellmap.on_cells.each do |x, y_values|
-        y_values.keys.each do |y|
-          draw_cell(x, y)
+        y_values.each do |y, neighbour_count|
+          draw_cell(x, y, neighbour_count)
         end
       end
     end
@@ -61,15 +62,20 @@ module GameOfLife
       end
     end
 
-    def draw_cell(x, y)
+    def draw_cell(x, y, neighbour_count)
+      color = cell_colour(neighbour_count)
       x = x * @resolution
       y = y * @resolution
-      draw_quad(x,               y,               @color,
-                x + @resolution, y,               @color,
-                x,               y + @resolution, @color,
-                x + @resolution, y + @resolution, @color,
+      draw_quad(x,               y,               color,
+                x + @resolution, y,               color,
+                x,               y + @resolution, color,
+                x + @resolution, y + @resolution, color,
                 0
                )
+    end
+
+    def cell_colour(neighbour_count)
+      @color_map.color(neighbour_count)
     end
   end
 end

@@ -47,4 +47,5 @@ begin
   GameOfLife::Window.new(cell_map).show
 rescue => e
   puts e.message
+  puts e.backtrace
 end
