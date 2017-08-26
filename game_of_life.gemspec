@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
-  s.name = 'Game of Life'
-  s.version = '0.0.1'
+  s.name = 'game_of_life'
+  s.version = '0.0.2'
   s.authors = ["Greg Baker"]
   s.date = %q{2013-05-22}
   s.description = 'Simple Game of Life implementation'
@@ -13,11 +13,11 @@ Gem::Specification.new do |s|
     lib/game_of_life/grid_base.rb
     lib/game_of_life/grid_builder.rb
     lib/game_of_life/cell_map.rb
+    lib/game_of_life/color_map.rb
   }
   s.require_paths = ['lib', 'lib/game_of_life']
   s.has_rdoc = false
   s.bindir = 'bin'
   s.executables = ['game_of_life']
-  s.add_development_dependency('gosu')
   s.add_runtime_dependency('gosu')
 end
