@@ -5,13 +5,15 @@ module GameOfLife
 
     describe 'default attributes' do
       let(:cellmap) { CellMap.new }
-      subject { cellmap } 
+      subject { cellmap }
 
-      its(:height) { should == 800 }
-      its(:width) { should == 800 }
-      its(:resolution) { should == 10 }
-      its(:rows) { should == 80 }
-      its(:columns) { should == 80 }
+      it 'initializes with the correct defaults' do
+        expect(subject.height).to eq(800)
+        expect(subject.width).to eq(800)
+        expect(subject.resolution).to eq(10)
+        expect(subject.rows).to eq(80)
+        expect(subject.columns).to eq(80)
+      end
     end
 
 
@@ -20,168 +22,160 @@ module GameOfLife
       let(:cellmap4) { CellMap.new(options) }
       subject { cellmap4 }
 
-      its(:height) { should == 400 }
-      its(:width) { should == 600 }
-      its(:resolution) { should == 5 }
-      its(:rows) { should == 80 }
-      its(:columns) { should == 120 }
+      it 'initializes correctly with user supplied attributes' do
+        expect(subject.height).to eq(400)
+        expect(subject.width).to eq(600)
+        expect(subject.resolution).to eq(5)
+        expect(subject.rows).to eq(80)
+        expect(subject.columns).to eq(120)
+      end
     end
 
     describe 'The grid' do
-      it 'should be blank without a pattern' do
+      it 'is blank without a pattern' do
         options = { resolution: 10, width: 20, height: 30 }
-        CellMap.new(options).grid.should == 
-          [[[0, 0], [0, 0]], [[0, 0], [0, 0]], [[0, 0], [0, 0]]]
+        expect(CellMap.new(options).grid).to eq([
+          [[0, 0], [0, 0]], [[0, 0], [0, 0]], [[0, 0], [0, 0]]])
       end
 
-      it 'should contain the pattern when built with a pattern' do
+      it 'contains the pattern when built with a pattern' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
-        CellMap.new(options).grid.should == 
-          [
-            [[0, 0], [0, 1], [0, 2], [0, 2], [0, 1]], 
-            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]], 
-            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
-            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
+        expect(CellMap.new(options).grid).to eq([
+            [[0, 0], [0, 1], [0, 2], [0, 2], [0, 1]],
+            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]],
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]],
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]],
             [[0, 0], [0, 1], [0, 1], [0, 1], [0, 0]]
-        ]
+        ])
       end
     end
 
     describe 'next_generation' do
-      it 'should iterate correctly once' do
+      it 'iterates correctly once' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
 
         cellmap.next_generation
-        cellmap.grid.should == 
-          [
-            [[0, 1], [0, 2], [0, 3], [0, 2], [0, 1]], 
-            [[0, 2], [1, 2], [1, 3], [1, 1], [0, 1]], 
-            [[0, 3], [1, 4], [0, 6], [0, 3], [0, 1]], 
-            [[0, 2], [1, 2], [1, 2], [0, 1], [0, 0]], 
+        expect(cellmap.grid).to eq([
+            [[0, 1], [0, 2], [0, 3], [0, 2], [0, 1]],
+            [[0, 2], [1, 2], [1, 3], [1, 1], [0, 1]],
+            [[0, 3], [1, 4], [0, 6], [0, 3], [0, 1]],
+            [[0, 2], [1, 2], [1, 2], [0, 1], [0, 0]],
             [[0, 1], [0, 2], [0, 2], [0, 1], [0, 0]]
-        ] 
+        ])
       end
 
-      it 'should iterate correctly twice' do
+      it 'iterates correctly twice' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options) 
         2.times { cellmap.next_generation }
-        cellmap.grid.should == 
-          [
-            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
-            [[0, 2], [1, 3], [1, 3], [0, 3], [0, 2]], 
-            [[1, 2], [0, 5], [0, 5], [1, 2], [0, 2]], 
-            [[0, 2], [1, 2], [1, 2], [0, 2], [0, 2]], 
+        expect(cellmap.grid).to eq([
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]],
+            [[0, 2], [1, 3], [1, 3], [0, 3], [0, 2]],
+            [[1, 2], [0, 5], [0, 5], [1, 2], [0, 2]],
+            [[0, 2], [1, 2], [1, 2], [0, 2], [0, 2]],
             [[0, 1], [0, 3], [0, 3], [0, 2], [0, 0]]
-        ]
+        ])
       end
 
-      it 'should iterate correcty thrice' do
+      it 'iterates correcty thrice' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options) 
         3.times { cellmap.next_generation }
-        cellmap.grid.should == 
-          [
-            [[0, 3], [1, 5], [1, 6], [0, 4], [0, 1]], 
-            [[0, 3], [1, 4], [1, 5], [1, 3], [0, 3]], 
-            [[1, 2], [0, 5], [0, 6], [1, 3], [0, 3]], 
-            [[0, 3], [1, 4], [1, 4], [0, 3], [0, 2]], 
+        expect(cellmap.grid).to eq([
+            [[0, 3], [1, 5], [1, 6], [0, 4], [0, 1]],
+            [[0, 3], [1, 4], [1, 5], [1, 3], [0, 3]],
+            [[1, 2], [0, 5], [0, 6], [1, 3], [0, 3]],
+            [[0, 3], [1, 4], [1, 4], [0, 3], [0, 2]],
             [[0, 3], [1, 5], [1, 5], [0, 3], [0, 0]]
-        ]
+        ])
       end
 
-      it 'should increment neighbours correctly' do
+      it 'increments neighbours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 1, 1, 1)
-        cellmap.grid.should ==
-          [
-            [[0, 1], [0, 2], [0, 3], [0, 2], [0, 1]], 
-            [[0, 2], [0, 3], [1, 4], [1, 2], [0, 1]], 
-            [[0, 2], [1, 4], [1, 5], [0, 4], [0, 1]], 
-            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
+        expect(cellmap.grid).to eq([
+            [[0, 1], [0, 2], [0, 3], [0, 2], [0, 1]],
+            [[0, 2], [0, 3], [1, 4], [1, 2], [0, 1]],
+            [[0, 2], [1, 4], [1, 5], [0, 4], [0, 1]],
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]],
             [[0, 0], [0, 1], [0, 1], [0, 1], [0, 0]]
-        ]
+        ])
       end
 
-      it 'should decrement neighbours correctly' do
+      it 'decrements neighbours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 1, 1, -1)
-        cellmap.grid.should ==
-          [
-            [[0, -1], [0, 0], [0, 1], [0, 2], [0, 1]], 
+        expect(cellmap.grid).to eq([
+            [[0, -1], [0, 0], [0, 1], [0, 2], [0, 1]],
             [[0, 0], [0, 3], [1, 2], [1, 2], [0, 1]],
-            [[0, 0], [1, 2], [1, 3], [0, 4], [0, 1]], 
-            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
+            [[0, 0], [1, 2], [1, 3], [0, 4], [0, 1]],
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]],
             [[0, 0], [0, 1], [0, 1], [0, 1], [0, 0]]
-        ]
+        ])
       end
     end
 
 
     describe 'wrapping' do
-      it 'should increment top left corner neighours correctly' do
+      it 'increments top left corner neighours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 0, 0, 1)
-        cellmap.grid.should ==
-          [
-            [[0, 0], [0, 2], [0, 2], [0, 2], [0, 2]], 
-            [[0, 2], [0, 4], [1, 3], [1, 2], [0, 2]], 
-            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
-            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
+        expect(cellmap.grid).to eq([
+            [[0, 0], [0, 2], [0, 2], [0, 2], [0, 2]],
+            [[0, 2], [0, 4], [1, 3], [1, 2], [0, 2]],
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]],
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]],
             [[0, 1], [0, 2], [0, 1], [0, 1], [0, 1]]
-        ]
+        ])
       end
 
-      it 'should increment bottom left corner neighours correctly' do
+      it 'increments bottom left corner neighours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 0, 4, 1)
-        cellmap.grid.should == 
-          [
-            [[0, 1], [0, 2], [0, 2], [0, 2], [0, 2]], 
-            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]], 
-            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
-            [[0, 2], [0, 4], [1, 2], [0, 2], [0, 1]], 
+        expect(cellmap.grid).to eq([
+            [[0, 1], [0, 2], [0, 2], [0, 2], [0, 2]],
+            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]],
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]],
+            [[0, 2], [0, 4], [1, 2], [0, 2], [0, 1]],
             [[0, 0], [0, 2], [0, 1], [0, 1], [0, 1]]
-        ]
+        ])
       end
 
-      it 'should increment top right corner neighbours correctly' do
+      it 'increments top right corner neighbours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 4, 0, 1)
-        cellmap.grid.should ==
-          [
-            [[0, 1], [0, 1], [0, 2], [0, 3], [0, 1]], 
-            [[0, 2], [0, 3], [1, 3], [1, 3], [0, 2]], 
-            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
-            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]], 
+        expect(cellmap.grid).to eq([
+            [[0, 1], [0, 1], [0, 2], [0, 3], [0, 1]],
+            [[0, 2], [0, 3], [1, 3], [1, 3], [0, 2]],
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]],
+            [[0, 1], [0, 3], [1, 2], [0, 2], [0, 0]],
             [[0, 1], [0, 1], [0, 1], [0, 2], [0, 1]]
-        ]
+        ])
       end
 
-      it 'should increment bottom right corner neighbours correctly' do
+      it 'increments bottom right corner neighbours correctly' do
         options = { resolution: 10, width: 50, height: 50, pattern: RPENTO }
         cellmap = CellMap.new(options)
         cellmap.instance_eval { @next_grid = @grid }
         cellmap.send(:update_neighbours, 4, 4, 1)
-        cellmap.grid.should == 
-          [
-            [[0, 1], [0, 1], [0, 2], [0, 3], [0, 2]], 
-            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]], 
-            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]], 
-            [[0, 2], [0, 3], [1, 2], [0, 3], [0, 1]], 
+        expect(cellmap.grid).to eq([
+            [[0, 1], [0, 1], [0, 2], [0, 3], [0, 2]],
+            [[0, 1], [0, 3], [1, 3], [1, 2], [0, 1]],
+            [[0, 1], [1, 3], [1, 4], [0, 4], [0, 1]],
+            [[0, 2], [0, 3], [1, 2], [0, 3], [0, 1]],
             [[0, 1], [0, 1], [0, 1], [0, 2], [0, 0]]
-        ]
+        ])
       end
     end
   end
